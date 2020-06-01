@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+
+  grafana:
+    ports:
+      - 3000:3000
+    # publish only in node, not swarm mesh
+    #ports:
+    #  - target: 3000
+    #    published: 3000
+    #    protocol: tcp
+    #    mode: host

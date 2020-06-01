@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+
+  prometheus:
+    ports:
+     - 9090:9090
+    
+  node-exporter:
+    ports:
+      - 9100:9100
+    
+  alertmanager:
+    ports:
+      - 9093:9093
+    
+  cadvisor:
+    ports:
+      - 8080:8080
+    
+  grafana:
+    ports:
+      - 3000:3000
+    # publish only in node, not swarm mesh
+    # ports:
+    #   - target: 3000
+    #     published: 80
+    #     protocol: tcp
+    #     mode: host
+    

@@ -1,0 +1,73 @@
+version: '3.7'
+volumes:
+  certs: {}
+  conf.d: {}
+  html: {}
+  vhost.d: {}
+
+networks:
+  frontend:
+
+services:
+
+  nginx-proxy:
+    hostname: nginx-proxy
+    image: jwilder/nginx-proxy:alpine
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+    volumes:
+      - "certs:/etc/nginx/certs:ro"
+      - "vhost.d:/etc/nginx/vhost.d"
+      - "conf.d:/etc/nginx/conf.d"
+      - "html:/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200m"
+        max-file: "5"
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      restart_policy:
+        condition: on-failure    
+    networks:
+      - frontend
+
+  letsencrypt:
+    hostname: letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "certs:/etc/nginx/certs:rw"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "vhost.d:/etc/nginx/vhost.d"
+      - "conf.d:/etc/nginx/conf.d"
+      - "html:/usr/share/nginx/html"
+    environment:
+      NGINX_PROXY_CONTAINER: nginx-proxy
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      restart_policy:
+        condition: on-failure
+    networks:
+      - frontend
+
+  grafana:
+    environment:
+      VIRTUAL_HOST: "monitor.aeducar.es"
+      LETSENCRYPT_HOST: "monitor.aeducar.es"
+      LETSENCRYPT_EMAIL: "sannacho@gmail.com"
+    networks:
+      - frontend
