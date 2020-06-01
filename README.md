@@ -1,4 +1,4 @@
-# DEPLOY MONITOR to AEDUCAR
+# DESPLIEGUE DE SISTEMA DE MONITORIZACIÓN PARA AEDUCAR
 
 ## Pasos para desplegar servicio en producción.
 
@@ -41,6 +41,7 @@ Para desplegar el servicio de monitorización:
    2. Si no se quieren alertas a slack, dejarlo sin comentar.
 
 4. Arranque del sistema (se cargarán los servicios necesarios en los workers para recolectar información)
+En el caso de arrancar en producción, definir en docker-stack.override_prod.yml VIRTUAL_HOST,LETSENCRYPT_HOST y LETSENCRYPT_EMAIL acorde a tu infraestructura.
   docker stack deploy -c docker-stack.yml -c docker-stack.override.yml monitor
     (cambiar el enlace simbólico si interesa prod o dev)
 
