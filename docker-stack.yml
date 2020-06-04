@@ -74,6 +74,9 @@ services:
       - /dev/disk/:/dev/disk:ro
     networks:
       - monitor-net
+    command:
+      - '--docker_only'
+      - '--housekeeping_interval=10s'
     deploy:
       mode: global
       restart_policy:
